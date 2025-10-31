@@ -4,8 +4,26 @@
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
+@source '../**/*.vue';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    
+    /* ATV Theme Colors (HSL) */
+    --atv-orange: 16 85% 55%;
+    --atv-orange-dark: 16 85% 45%;
+    --atv-orange-light: 16 85% 65%;
+    --atv-beige: 30 25% 85%;
+    --atv-gray: 220 13% 91%;
+    
+    /* Semantic Colors (HSL) */
+    --background: 0 0% 99%;
+    --foreground: 222 84% 5%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --border: 214 32% 91%;
+    --primary: 16 85% 55%;
+    --card: 0 0% 100%;
+    --radius: 0.5rem;
 }
