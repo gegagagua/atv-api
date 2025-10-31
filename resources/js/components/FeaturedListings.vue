@@ -3,20 +3,39 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between mb-8">
         <h2 class="text-3xl font-bold text-foreground">{{ t('featured.title') }}</h2>
-        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground border-atv-orange text-atv-orange hover:bg-atv-orange hover:text-white">
+        <router-link
+          to="/find-atvs"
+          class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground border-atv-orange text-atv-orange hover:bg-atv-orange hover:text-white"
+        >
           {{ t('featured.viewAll') }}
-        </button>
+        </router-link>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div
+          v-if="loading"
+          class="col-span-full text-center py-8 text-muted-foreground"
+        >
+          Loading featured listings...
+        </div>
+        <div
           v-for="listing in featuredListings"
           :key="listing.id"
+          @click="handleCardClick(listing)"
           class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
         >
           <div class="p-0">
-            <div class="bg-atv-gray rounded-t-lg h-48 flex items-center justify-center text-6xl">
-              {{ listing.image }}
+            <div
+              v-if="listing.image"
+              class="bg-atv-gray rounded-t-lg h-48 flex items-center justify-center overflow-hidden"
+            >
+              <img :src="listing.image" :alt="listing.title" class="w-full h-full object-cover" />
+            </div>
+            <div
+              v-else
+              class="bg-atv-gray rounded-t-lg h-48 flex items-center justify-center text-6xl"
+            >
+              🏁
             </div>
             <div class="p-4">
               <div class="flex items-start justify-between mb-2">
@@ -51,51 +70,62 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useLanguage } from '../composables/useLanguage';
+import { getAtvs } from '../services/atv';
 
 const { t } = useLanguage();
+const router = useRouter();
+const featuredListings = ref([]);
+const loading = ref(true);
 
-const featuredListings = [
-  {
-    id: 1,
-    title: '2024 Polaris RZR XP 1000',
-    price: '$21,999',
-    location: 'Dallas, TX',
-    mileage: 'New',
-    image: '🏁',
-    dealer: 'Dallas ATV',
-    features: ['4WD', 'Sport', 'Side by Side'],
-  },
-  {
-    id: 2,
-    title: '2023 Can-Am Defender HD8',
-    price: '$18,499',
-    location: 'Phoenix, AZ',
-    mileage: '125 miles',
-    image: '🔴',
-    dealer: 'Desert ATVs',
-    features: ['Utility', 'Work Ready', 'HD Series'],
-  },
-  {
-    id: 3,
-    title: '2024 Honda Pioneer 1000',
-    price: '$19,999',
-    location: 'Denver, CO',
-    mileage: 'New',
-    image: '🔴',
-    dealer: 'Rocky Mountain Honda',
-    features: ['6-Speed', '3-Seater', 'Trail Ready'],
-  },
-  {
-    id: 4,
-    title: '2023 Yamaha YXZ1000R SS',
-    price: '$22,799',
-    location: 'Atlanta, GA',
-    mileage: '50 miles',
-    image: '🔵',
-    dealer: 'Southern ATVs',
-    features: ['Sport', 'Manual Trans', 'Turbocharged'],
-  },
-];
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
+const formatListing = (atv) => {
+  return {
+    id: atv.id,
+    title: atv.name || `${atv.year || ''} ${atv.brand?.title || ''} ${atv.name || ''}`.trim(),
+    price: formatPrice(atv.price),
+    location: atv.location?.name || 'N/A',
+    mileage: atv.mileage ? `${atv.mileage} miles` : 'New',
+    image: atv.first_image_url || null,
+    dealer: atv.user?.name || 'Private Seller',
+    features: [
+      atv.transmission && `Transmission: ${atv.transmission}`,
+      atv.engine && `Engine: ${atv.engine}`,
+      atv.fuel && `Fuel: ${atv.fuel}`,
+    ].filter(Boolean).slice(0, 2),
+  };
+};
+
+const handleCardClick = (listing) => {
+  router.push(`/find-atvs?id=${listing.id}`);
+};
+
+onMounted(async () => {
+  try {
+    loading.value = true;
+    const res = await getAtvs({
+      vip_only: true,
+      active_only: true,
+      per_page: 4,
+    });
+    if (res.data && res.data.data) {
+      featuredListings.value = res.data.data.map(formatListing);
+    }
+  } catch (error) {
+    console.error('Error loading featured listings:', error);
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 

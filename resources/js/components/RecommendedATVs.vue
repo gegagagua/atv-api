@@ -10,14 +10,30 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div
+          v-if="loading"
+          class="col-span-full text-center py-8 text-muted-foreground"
+        >
+          Loading recommended ATVs...
+        </div>
+        <div
           v-for="atv in recommendedATVs"
           :key="atv.id"
+          @click="handleCardClick(atv)"
           class="rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-lg transition-shadow cursor-pointer bg-white"
         >
           <div class="p-0">
             <div class="relative">
-              <div class="bg-atv-gray rounded-t-lg h-48 flex items-center justify-center text-6xl">
-                {{ atv.image }}
+              <div
+                v-if="atv.image"
+                class="bg-atv-gray rounded-t-lg h-48 flex items-center justify-center overflow-hidden"
+              >
+                <img :src="atv.image" :alt="atv.title" class="w-full h-full object-cover" />
+              </div>
+              <div
+                v-else
+                class="bg-atv-gray rounded-t-lg h-48 flex items-center justify-center text-6xl"
+              >
+                🏁
               </div>
               <span
                 v-if="atv.originalPrice"
@@ -71,56 +87,62 @@
 </template>
 
 <script setup>
-const recommendedATVs = [
-  {
-    id: 1,
-    title: '2024 Kawasaki Brute Force 750',
-    price: '$9,999',
-    originalPrice: '$11,499',
-    location: 'Miami, FL',
-    mileage: 'New',
-    image: '🟢',
-    dealer: 'Miami Motorsports',
-    rating: 4.8,
-    reviews: 127,
-    features: ['4x4', 'EPS', 'V-Force'],
-  },
-  {
-    id: 2,
-    title: '2023 CFMoto CForce 500 HO',
-    price: '$6,799',
-    location: 'Las Vegas, NV',
-    mileage: '250 miles',
-    image: '⚫',
-    dealer: 'Vegas ATV Center',
-    rating: 4.6,
-    reviews: 89,
-    features: ['CVT', '4WD', 'EPS'],
-  },
-  {
-    id: 3,
-    title: '2024 Suzuki KingQuad 750AXi',
-    price: '$8,799',
-    location: 'Seattle, WA',
-    mileage: 'New',
-    image: '🟡',
-    dealer: 'Northwest ATVs',
-    rating: 4.7,
-    reviews: 156,
-    features: ['Independent Suspension', '4x4', 'EFI'],
-  },
-  {
-    id: 4,
-    title: '2023 Polaris Sportsman 570',
-    price: '$7,999',
-    location: 'Chicago, IL',
-    mileage: '75 miles',
-    image: '🏁',
-    dealer: 'Windy City ATVs',
-    rating: 4.9,
-    reviews: 203,
-    features: ['All-Terrain', 'On-Demand AWD', 'Digital Display'],
-  },
-];
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { getAtvs } from '../services/atv';
+
+const router = useRouter();
+const recommendedATVs = ref([]);
+const loading = ref(true);
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+};
+
+const formatListing = (atv) => {
+  return {
+    id: atv.id,
+    title: atv.name || `${atv.year || ''} ${atv.brand?.title || ''} ${atv.name || ''}`.trim(),
+    price: formatPrice(atv.price),
+    originalPrice: null, // Can add original price logic if needed
+    location: atv.location?.name || 'N/A',
+    mileage: atv.mileage ? `${atv.mileage} miles` : 'New',
+    image: atv.first_image_url || null,
+    dealer: atv.user?.name || 'Private Seller',
+    rating: 4.5, // Can add rating system later
+    reviews: Math.floor(Math.random() * 200), // Placeholder
+    features: [
+      atv.transmission && `Transmission: ${atv.transmission}`,
+      atv.engine && `Engine: ${atv.engine}`,
+      atv.fuel && `Fuel: ${atv.fuel}`,
+    ].filter(Boolean).slice(0, 2),
+  };
+};
+
+const handleCardClick = (atv) => {
+  router.push(`/find-atvs?id=${atv.id}`);
+};
+
+onMounted(async () => {
+  try {
+    loading.value = true;
+    const res = await getAtvs({
+      active_only: true,
+      per_page: 4,
+    });
+    if (res.data && res.data.data) {
+      recommendedATVs.value = res.data.data.map(formatListing);
+    }
+  } catch (error) {
+    console.error('Error loading recommended ATVs:', error);
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 

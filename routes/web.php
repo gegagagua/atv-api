@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+// All routes should return the Vue app (SPA catch-all)
+Route::get('/{any}', function () {
     return view('app');
-});
+})->where('any', '.*');

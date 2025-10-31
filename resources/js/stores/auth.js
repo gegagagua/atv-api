@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
     setStatus('loading');
     try {
       const data = await getMe();
-      setUser(data.user || data);
+      setUser(data?.data?.user || data?.user || null);
       setStatus('authenticated');
     } catch (error) {
       setUser(null);

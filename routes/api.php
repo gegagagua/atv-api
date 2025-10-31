@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AtvController;
 use App\Http\Controllers\Api\AtvImageController;
 use App\Http\Controllers\Api\BlogController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\LocationController;
 use App\Http\Controllers\Api\PasswordResetController;
 use Illuminate\Http\Request;
@@ -43,6 +44,9 @@ Route::get('/brands', [AtvController::class, 'brands']);
 // Blog routes (public read access)
 Route::get('/blogs', [BlogController::class, 'index']);
 Route::get('/blogs/{blog}', [BlogController::class, 'show']);
+
+// Contact routes (public)
+Route::post('/contact', [ContactController::class, 'store']);
 
 // ATV Images routes (public read access)
 Route::get('/atvs/{atv_id}/images', [AtvImageController::class, 'index']);

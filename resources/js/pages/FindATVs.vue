@@ -25,7 +25,7 @@
 
             <div class="flex items-center gap-4">
               <!-- Sort Options -->
-              <select v-model="sortBy" class="w-48 px-3 py-2 border border-border rounded-md">
+              <select v-model="sortBy" @change="loadAtvs()" class="w-48 px-3 py-2 border border-border rounded-md">
                 <option value="newest">Newest First</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -81,29 +81,21 @@
             <!-- Pagination -->
             <div v-if="totalPages > 1" class="flex justify-center items-center gap-2 mt-8">
               <button
-                @click="currentPage = Math.max(1, currentPage - 1)"
+                @click="currentPage = Math.max(1, currentPage - 1); loadAtvs();"
                 :disabled="currentPage === 1"
-                class="px-4 py-2 border border-border rounded-md disabled:opacity-50"
+                class="px-4 py-2 border border-border rounded-md disabled:opacity-50 hover:bg-accent"
               >
                 Previous
               </button>
 
-              <button
-                v-for="page in totalPages"
-                :key="page"
-                @click="currentPage = page"
-                :class="[
-                  'px-4 py-2 border rounded-md text-sm',
-                  page === currentPage ? 'bg-atv-orange text-white' : 'border-border'
-                ]"
-              >
-                {{ page }}
-              </button>
+              <span class="text-sm text-muted-foreground">
+                Page {{ currentPage }} of {{ totalPages }}
+              </span>
 
               <button
-                @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                @click="currentPage = Math.min(totalPages, currentPage + 1); loadAtvs();"
                 :disabled="currentPage === totalPages"
-                class="px-4 py-2 border border-border rounded-md disabled:opacity-50"
+                class="px-4 py-2 border border-border rounded-md disabled:opacity-50 hover:bg-accent"
               >
                 Next
               </button>
@@ -136,24 +128,37 @@ const viewMode = ref('grid');
 const showFilters = ref(true);
 const filters = ref({});
 const currentPage = ref(1);
-const totalPages = ref(2);
+const totalPages = ref(1);
+const itemsPerPage = 12;
 const data = ref([]);
 
 const handleFiltersChange = (newFilters) => {
   filters.value = newFilters;
   currentPage.value = 1;
-  // TODO: Apply filters and reload data
+  loadAtvs();
 };
 
-onMounted(async () => {
+const loadAtvs = async () => {
   try {
-    const res = await getAtvs('');
+    const params = {
+      page: currentPage.value,
+      per_page: itemsPerPage,
+      active_only: true,
+      ...filters.value,
+    };
+    
+    const res = await getAtvs(params);
     if (res.data) {
-      data.value = res.data?.data || [];
+      data.value = res.data.data || [];
+      totalPages.value = res.data.last_page || 1;
     }
   } catch (error) {
     console.error('Error loading ATVs:', error);
   }
+};
+
+onMounted(() => {
+  loadAtvs();
 });
 </script>
 
