@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white border border-border rounded-lg p-6 sticky top-4">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6 sticky top-4">
     <button
       v-if="hasActiveFilters"
       @click="clearFilters"
-      class="text-muted-foreground hover:text-destructive mb-4 text-sm flex items-center"
+      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-9 rounded-md px-3 border border-input bg-background hover:bg-accent hover:text-accent-foreground text-muted-foreground hover:text-destructive mb-4"
     >
-      <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="h-4 w-4 pointer-events-none shrink-0 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
       {{ t('filters.clearFilters') }}
@@ -23,12 +23,12 @@
     <div class="space-y-6">
       <!-- Make -->
       <div class="space-y-2">
-        <label for="make" class="block text-sm font-medium">{{ t('filters.manufacturer') }}</label>
+        <label for="make" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.manufacturer') }}</label>
         <select
           id="make"
           v-model="filters.make"
           @change="handleFilterChange"
-          class="w-full px-3 py-2 border border-border rounded-md"
+          class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">{{ t('filters.selectManufacturer') }}</option>
           <option v-for="brand in brands" :key="brand.id" :value="brand.id">
@@ -39,19 +39,19 @@
 
       <!-- Model -->
       <div class="space-y-2">
-        <label for="model" class="block text-sm font-medium">{{ t('filters.model') }}</label>
+        <label for="model" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.model') }}</label>
         <input
           id="model"
           v-model="filters.model"
           @input="handleFilterChange"
           :placeholder="t('filters.modelName')"
-          class="w-full px-3 py-2 border border-border rounded-md"
+          class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
         />
       </div>
 
       <!-- Price Range -->
       <div class="space-y-2">
-        <label class="block text-sm font-medium">{{ t('filters.priceGEL') }}</label>
+        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.priceGEL') }}</label>
         <input
           type="range"
           v-model.number="priceRange[0]"
@@ -78,7 +78,7 @@
 
       <!-- Year Range -->
       <div class="space-y-2">
-        <label class="block text-sm font-medium">{{ t('filters.yearOfManufacture') }}</label>
+        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.yearOfManufacture') }}</label>
         <input
           type="range"
           v-model.number="yearRange[0]"
@@ -105,7 +105,7 @@
 
       <!-- Mileage Range -->
       <div class="space-y-2">
-        <label class="block text-sm font-medium">{{ t('filters.mileageKm') }}</label>
+        <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.mileageKm') }}</label>
         <input
           type="range"
           v-model.number="mileageRange[0]"
@@ -132,12 +132,12 @@
 
       <!-- Condition -->
       <div class="space-y-2">
-        <label for="condition" class="block text-sm font-medium">{{ t('filters.condition') }}</label>
+        <label for="condition" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.condition') }}</label>
         <select
           id="condition"
           v-model="filters.condition"
           @change="handleFilterChange"
-          class="w-full px-3 py-2 border border-border rounded-md"
+          class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">{{ t('filters.selectCondition') }}</option>
           <option value="new">{{ t('filters.new') }}</option>
@@ -150,12 +150,12 @@
 
       <!-- Engine Size -->
       <div class="space-y-2">
-        <label for="engineSize" class="block text-sm font-medium">{{ t('filters.engineSize') }}</label>
+        <label for="engineSize" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.engineSize') }}</label>
         <select
           id="engineSize"
           v-model="filters.engineSize"
           @change="handleFilterChange"
-          class="w-full px-3 py-2 border border-border rounded-md"
+          class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">{{ t('filters.selectEngineSize') }}</option>
           <option value="50-125">50-125cc</option>
@@ -169,12 +169,12 @@
 
       <!-- Location -->
       <div class="space-y-2">
-        <label for="location" class="block text-sm font-medium">{{ t('filters.location') }}</label>
+        <label for="location" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.location') }}</label>
         <select
           id="location"
           v-model="filters.location"
           @change="handleFilterChange"
-          class="w-full px-3 py-2 border border-border rounded-md"
+          class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">{{ t('filters.selectCity') }}</option>
           <option v-for="city in cities" :key="city.id" :value="city.id">
@@ -185,12 +185,12 @@
 
       <!-- Category -->
       <div class="space-y-2">
-        <label for="category" class="block text-sm font-medium">{{ t('filters.category') }}</label>
+        <label for="category" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">{{ t('filters.category') }}</label>
         <select
           id="category"
           v-model="filters.category"
           @change="handleFilterChange"
-          class="w-full px-3 py-2 border border-border rounded-md"
+          class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <option value="">{{ t('filters.selectCategory') }}</option>
           <option value="sport">{{ t('filters.sport') }}</option>

@@ -1,5 +1,5 @@
 <template>
-  <div class="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer bg-white border border-border rounded-lg">
+  <div class="rounded-lg border bg-card text-card-foreground shadow-sm group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer">
     <div class="relative">
       <img
         v-if="listing?.active_images && listing.active_images.length > 0"
@@ -25,7 +25,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
       </button>
-      <span class="absolute top-2 left-2 px-2 py-1 bg-green-100 text-green-800 border border-green-200 rounded text-xs">
+      <span class="absolute top-2 left-2 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-green-200 bg-green-100 text-green-800">
         {{ listing.year }}
       </span>
     </div>
@@ -68,7 +68,7 @@
       </div>
 
       <div class="flex flex-wrap gap-1 mb-3">
-        <span class="px-2 py-1 bg-muted text-xs rounded">
+        <span class="inline-flex items-center rounded-full border border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
           {{ listing.transmission }}
         </span>
       </div>
@@ -83,8 +83,8 @@
       </div>
 
       <div class="flex gap-2">
-        <button class="flex-1 flex items-center justify-center gap-1 px-4 py-2 bg-atv-orange hover:bg-atv-orange-dark text-white rounded-md text-sm">
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 flex-1 h-10 px-4 py-2 bg-atv-orange hover:bg-atv-orange-dark text-white">
+          <svg class="h-4 w-4 pointer-events-none shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
           </svg>
           {{ t('listing.call') }}

@@ -14,7 +14,7 @@
             <p class="text-lg text-muted-foreground mb-6">
               {{ t('sell.description') }}
             </p>
-            <button class="bg-atv-orange hover:bg-atv-orange-dark text-white px-6 py-3 rounded-md">
+            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-atv-orange hover:bg-atv-orange-dark text-white">
               {{ t('sell.button') }}
             </button>
           </div>
@@ -38,7 +38,7 @@
             <p class="text-lg mb-6 text-white/90">
               {{ t('buyOnline.description') }}
             </p>
-            <button class="bg-white text-atv-orange hover:bg-white/90 px-6 py-3 rounded-md">
+            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-white text-atv-orange hover:bg-white/90">
               {{ t('buyOnline.button') }}
             </button>
           </div>
