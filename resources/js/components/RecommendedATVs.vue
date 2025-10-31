@@ -56,7 +56,7 @@
                   {{ atv.originalPrice }}
                 </div>
               </div>
-              <div class="flex items-center gap-1 mb-2">
+              <div v-if="atv.rating && atv.reviews" class="flex items-center gap-1 mb-2">
                 <svg class="h-4 w-4 fill-yellow-400 text-yellow-400" viewBox="0 0 24 24">
                   <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                 </svg>
@@ -114,8 +114,8 @@ const formatListing = (atv) => {
     mileage: atv.mileage ? `${atv.mileage} miles` : 'New',
     image: atv.first_image_url || null,
     dealer: atv.user?.name || 'Private Seller',
-    rating: 4.5, // Can add rating system later
-    reviews: Math.floor(Math.random() * 200), // Placeholder
+    rating: null, // Rating system not implemented yet
+    reviews: null, // Reviews system not implemented yet
     features: [
       atv.transmission && `Transmission: ${atv.transmission}`,
       atv.engine && `Engine: ${atv.engine}`,

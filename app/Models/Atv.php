@@ -50,6 +50,15 @@ class Atv extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'first_image_url',
+    ];
+
+    /**
      * Scope a query to only include active ATVs.
      */
     public function scopeActive($query)

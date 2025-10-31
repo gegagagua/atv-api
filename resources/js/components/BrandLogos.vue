@@ -22,13 +22,26 @@
           </svg>
         </button>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 flex-1 mx-4">
+        <div v-if="loading" class="flex-1 mx-4 text-center py-8 text-muted-foreground">
+          Loading brands...
+        </div>
+        <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 flex-1 mx-4">
           <div
             v-for="brand in brands.slice(0, 6)"
-            :key="brand.name"
-            class="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer text-center"
+            :key="brand.id"
+            class="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-shadow cursor-pointer text-center flex flex-col items-center justify-center"
           >
-            <div class="text-4xl mb-3">{{ brand.logo }}</div>
+            <div v-if="brand.image" class="mb-3 h-16 w-16 flex items-center justify-center">
+              <img 
+                :src="brand.image" 
+                :alt="brand.name + ' logo'" 
+                class="max-h-full max-w-full object-contain"
+                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\'%3E%3Crect width=\'64\' height=\'64\' fill=\'%23f3f4f6\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' font-size=\'24\' fill=\'%239ca3af\'%3E🏁%3C/text%3E%3C/svg%3E'"
+              />
+            </div>
+            <div v-else class="mb-3 h-16 w-16 flex items-center justify-center text-4xl">
+              🏁
+            </div>
             <h3 class="font-semibold text-foreground">{{ brand.name }}</h3>
           </div>
         </div>
@@ -50,21 +63,29 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useLanguage } from '../composables/useLanguage';
+import { getBrands } from '../services/atv';
 
 const { t } = useLanguage();
+const brands = ref([]);
+const loading = ref(true);
 
-const brands = [
-  { name: 'Polaris', logo: '🏁' },
-  { name: 'Can-Am', logo: '🔴' },
-  { name: 'Honda', logo: '🔴' },
-  { name: 'Kawasaki', logo: '🟢' },
-  { name: 'Yamaha', logo: '🔵' },
-  { name: 'CFMoto', logo: '⚫' },
-  { name: 'Suzuki', logo: '🟡' },
-  { name: 'Kayo USA', logo: '🟠' },
-  { name: 'Segway', logo: '⚪' },
-  { name: 'Club Car', logo: '🔵' },
-];
+onMounted(async () => {
+  try {
+    const res = await getBrands();
+    if (res.data) {
+      brands.value = res.data.map(brand => ({
+        id: brand.id,
+        name: brand.title,
+        image: brand.image || null,
+      }));
+    }
+  } catch (error) {
+    console.error('Error loading brands:', error);
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
 

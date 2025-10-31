@@ -25,7 +25,7 @@
 
             <div class="flex items-center gap-4">
               <!-- Sort Options -->
-              <select v-model="sortBy" @change="loadAtvs()" class="w-48 px-3 py-2 border border-border rounded-md">
+              <select v-model="sortBy" @change="loadAtvs()" class="w-48 px-3 py-2 border border-border rounded-md bg-background">
                 <option value="newest">Newest First</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -147,6 +147,27 @@ const loadAtvs = async () => {
       ...filters.value,
     };
     
+    // Map sortBy to API sort parameter
+    if (sortBy.value === 'newest') {
+      params.sort = 'created_at';
+      params.order = 'desc';
+    } else if (sortBy.value === 'price-low') {
+      params.sort = 'price';
+      params.order = 'asc';
+    } else if (sortBy.value === 'price-high') {
+      params.sort = 'price';
+      params.order = 'desc';
+    } else if (sortBy.value === 'year-new') {
+      params.sort = 'year';
+      params.order = 'desc';
+    } else if (sortBy.value === 'year-old') {
+      params.sort = 'year';
+      params.order = 'asc';
+    } else if (sortBy.value === 'mileage-low') {
+      params.sort = 'mileage';
+      params.order = 'asc';
+    }
+    
     const res = await getAtvs(params);
     if (res.data) {
       data.value = res.data.data || [];
@@ -154,6 +175,7 @@ const loadAtvs = async () => {
     }
   } catch (error) {
     console.error('Error loading ATVs:', error);
+    data.value = [];
   }
 };
 

@@ -222,6 +222,23 @@ class AtvController extends Controller
             $query->where('brand_id', $request->brand_id);
         }
 
+        // Name/Model filter
+        if ($request->filled('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort', 'created_at');
+        $sortOrder = $request->get('order', 'desc');
+        
+        // Validate sort column to prevent SQL injection
+        $allowedSorts = ['created_at', 'price', 'year', 'mileage', 'name'];
+        if (in_array($sortBy, $allowedSorts)) {
+            $query->orderBy($sortBy, $sortOrder);
+        } else {
+            $query->orderBy('created_at', 'desc');
+        }
+
         $perPage = $request->get('per_page', 15);
         $atvs = $query->with(['location', 'user', 'brand', 'activeImages'])->paginate($perPage);
 

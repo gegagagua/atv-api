@@ -1,12 +1,16 @@
 <template>
   <div class="rounded-lg border bg-card text-card-foreground shadow-sm group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer">
     <div class="relative">
-      <img
-        v-if="listing?.active_images && listing.active_images.length > 0"
-        :src="listing.active_images[0].url"
-        :alt="listing.name"
-        class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-      />
+      <div v-if="listing?.active_images && listing.active_images.length > 0" class="w-full h-48 overflow-hidden">
+        <img
+          :src="listing.active_images[0].url"
+          :alt="listing.name"
+          class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <div v-else class="w-full h-48 bg-atv-gray flex items-center justify-center text-6xl">
+        🏁
+      </div>
       <button
         @click.stop="toggleFavorite"
         :class="[
@@ -53,7 +57,7 @@
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <span>{{ listing.mileage.toLocaleString() }} {{ t('listing.mileage') }}</span>
+          <span>{{ listing.mileage ? listing.mileage.toLocaleString() + ' ' + t('listing.mileage') : t('listing.new') }}</span>
         </div>
         <div v-if="listing?.location" class="flex items-center gap-1">
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,8 +66,8 @@
           </svg>
           <span>{{ listing?.location?.name }}</span>
         </div>
-        <div class="flex items-center gap-1 justify-end">
-          <span class="font-medium">{{ listing.engine.replace('Engine', '') }}</span>
+        <div v-if="listing.engine" class="flex items-center gap-1 justify-end">
+          <span class="font-medium">{{ listing.engine }}</span>
         </div>
       </div>
 

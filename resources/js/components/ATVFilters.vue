@@ -248,12 +248,57 @@ const hasActiveFilters = computed(() => {
 });
 
 const emitFilters = () => {
-  const filterData = {
-    ...filters.value,
-    priceRange: priceRange.value,
-    yearRange: yearRange.value,
-    mileageRange: mileageRange.value,
-  };
+  const filterData = {};
+  
+  // Map filters to API parameters
+  if (filters.value.make) {
+    filterData.brand_id = filters.value.make;
+  }
+  if (filters.value.model) {
+    // Note: API might need name parameter for model search
+    filterData.name = filters.value.model;
+  }
+  if (filters.value.location) {
+    filterData.location_id = filters.value.location;
+  }
+  if (filters.value.condition) {
+    // Map condition to API format if needed
+    // For now, we can use condition directly or map it
+    filterData.condition = filters.value.condition;
+  }
+  if (filters.value.engineSize) {
+    // Parse engine size range - API expects engine_from and engine_to
+    const parts = filters.value.engineSize.split('-');
+    if (parts.length === 2 && !parts[1].includes('+')) {
+      const min = parseInt(parts[0].replace('cc', ''));
+      const max = parseInt(parts[1].replace('cc', ''));
+      filterData.engine_from = min;
+      filterData.engine_to = max;
+    } else if (parts[0].includes('+')) {
+      // For "800+" format
+      const min = parseInt(parts[0].replace('cc', '').replace('+', ''));
+      filterData.engine_from = min;
+    }
+  }
+  
+  // Price range
+  if (priceRange.value[0] > 0 || priceRange.value[1] < 50000) {
+    filterData.price_from = priceRange.value[0];
+    filterData.price_to = priceRange.value[1];
+  }
+  
+  // Year range
+  if (yearRange.value[0] > 2000 || yearRange.value[1] < 2026) {
+    filterData.year_from = yearRange.value[0];
+    filterData.year_to = yearRange.value[1];
+  }
+  
+  // Mileage range
+  if (mileageRange.value[0] > 0 || mileageRange.value[1] < 30000) {
+    filterData.mileage_from = mileageRange.value[0];
+    filterData.mileage_to = mileageRange.value[1];
+  }
+  
   emit('filters-change', filterData);
   if (props.onFiltersChange) {
     props.onFiltersChange(filterData);
